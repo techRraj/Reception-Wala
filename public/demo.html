@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Patient Demo — BookMyAppointment</title>
+<!-- FontAwesome for Real Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  :root{--teal:#0b3d36;--wa:#25D366;--green:#12b76a;--mut:#5c6f6a;--line:#e5e0d5;--cream:#faf8f3;
+    --wa-bg:#efeae2; --wa-in:#ffffff; --wa-out:#d9fdd3; --wa-tick:#53bdeb;}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans",sans-serif;background:var(--cream);color:#0c2b26;min-height:100vh}
+  a{color:var(--teal)}
+  .top{display:flex;justify-content:space-between;align-items:center;padding:14px 22px;border-bottom:1px solid var(--line);background:#fff}
+  .logo{font-weight:800;font-size:18px;text-decoration:none;color:#0c2b26;display:flex;gap:8px;align-items:center}
+  .logo .mark{width:30px;height:30px;border-radius:8px;background:var(--teal);color:#fff;display:grid;place-items:center;font-size:15px}
+  .top .links{display:flex;gap:14px;font-size:13.5px;font-weight:700}
+  .top .links a{text-decoration:none;padding:8px 14px;border-radius:10px}
+  .dash{background:var(--teal);color:#fff}
+  .main{max-width:1060px;margin:0 auto;padding:28px 20px;display:grid;grid-template-columns:1fr 400px;gap:32px;align-items:start}
+  @media(max-width:860px){.main{grid-template-columns:1fr}.phonecol{margin:0 auto;width:100%;display:flex;justify-content:center}}
+  h1{font-size:26px;margin-bottom:8px}
+  .sub{color:var(--mut);font-size:14.5px;margin-bottom:20px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:16px}
+  .card h3{font-size:15px;margin-bottom:12px}
+  .field{margin-bottom:12px}
+  .field label{font-size:12.5px;font-weight:700;color:var(--mut);display:block;margin-bottom:4px}
+  .field input{width:100%;padding:9px 12px;border:1.5px solid var(--line);border-radius:10px;font-size:14px;font-family:inherit}
+  .field input:focus{outline:none;border-color:var(--green)}
+  .trylist{display:flex;flex-direction:column;gap:8px}
+  .try{background:var(--cream);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:13.5px;cursor:pointer;text-align:left;font-family:inherit;transition:.12s;display:flex;align-items:center;gap:8px}
+  .try:hover{border-color:var(--green);background:#e7f8f0}
+  .note{font-size:12.5px;color:var(--mut);background:#fff7e8;border:1px solid #f3e2b8;border-radius:10px;padding:10px 12px}
+  .reset{background:none;border:none;color:#c0392b;font-size:12.5px;font-weight:700;cursor:pointer;margin-top:4px;display:flex;align-items:center;gap:6px}
+  
+  /* Phone Simulator */
+  .phone{width:380px;max-width:100%;background:#111b21;border-radius:36px;padding:10px;box-shadow:0 24px 60px rgba(12,43,38,.25)}
+  .screen{background:var(--wa-bg);border-radius:28px;overflow:hidden;display:flex;flex-direction:column;height:640px; background-image:url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');background-size:cover}
+  .wahead{background:#075E54;color:#fff;padding:12px 14px;display:flex;gap:10px;align-items:center}
+  .avatar{width:38px;height:38px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:19px;color:#075E54}
+  .wahead .nm{font-weight:700;font-size:14.5px;line-height:1.2}
+  .wahead .st{font-size:11.5px;color:#cfe9e2}
+  .wahead .ic{margin-left:auto;font-size:16px;opacity:.85;display:flex;gap:14px}
+  
+  /* Real WhatsApp Chat UI */
+  .msgs{flex:1;overflow-y:auto;padding:14px 12px}
+  .day{ text-align:center;margin:6px 0 12px}
+  .day span{background:#fff;color:#667781;font-size:11px;padding:4px 12px;border-radius:8px;box-shadow:0 1px 1px rgba(0,0,0,.08);text-transform:uppercase;font-weight:600}
+  .bub{max-width:85%;padding:8px 10px;border-radius:8px;font-size:14px;line-height:1.4;margin-bottom:7px;white-space:pre-line;box-shadow:0 1px 0.5px rgba(11,20,26,.13);word-wrap:break-word;position:relative}
+  .bub.in{background:var(--wa-in);border-top-left-radius:0}
+  .bub.out{background:var(--wa-out);margin-left:auto;border-top-right-radius:0}
+  .bub small{display:block;text-align:right;font-size:10.5px;color:#667781;margin-top:4px;margin-left:20px}
+  .bub .ticks{color:var(--wa-tick);font-size:11px;margin-left:3px}
+  
+  .typing{display:none;margin-bottom:7px}
+  .typing .bub{display:inline-flex;gap:4px;align-items:center;padding:12px 14px}
+  .dot{width:7px;height:7px;border-radius:50%;background:#9db3ab;animation:bl 1.2s infinite}
+  .dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
+  @keyframes bl{0%,60%,100%{opacity:.3}30%{opacity:1}}
+  
+  .chips{display:flex;gap:6px;padding:8px 10px;overflow-x:auto;background:#f0f2f5;border-top:1px solid #e0ddd6;scrollbar-width:none}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{white-space:nowrap;background:#fff;border:1px solid #d5dbd8;color:#075E54;font-size:12px;font-weight:700;padding:6px 11px;border-radius:999px;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:5px}
+  .chip:hover{background:#e7f8f0}
+  
+  .inputrow{display:flex;gap:8px;padding:9px 10px;background:#f0f2f5}
+  .inputrow input{flex:1;border:none;border-radius:22px;padding:11px 16px;font-size:14px;font-family:inherit;background:#fff}
+  .inputrow input:focus{outline:none}
+  .send{width:44px;height:44px;border-radius:50%;border:none;background:var(--wa);color:#fff;font-size:17px;cursor:pointer;display:grid;place-items:center;flex-shrink:0}
+  .send:hover{filter:brightness(1.06)}
+</style>
+</head>
+<body>
+<div class="top">
+  <a class="logo" href="/"><span class="mark"><i class="fa-brands fa-whatsapp"></i></span>Reception<span style="color:var(--green)">Wala</span>&nbsp;<span style="font-size:12px;color:var(--mut);font-weight:600">Patient Demo</span></a>
+  <div class="links"><a href="/"><i class="fa-solid fa-arrow-left"></i> Home</a><a class="dash" href="/app.html">Doctor Dashboard <i class="fa-solid fa-arrow-up-right-from-square"></i></a></div>
+</div>
+
+<div class="main">
+  <div>
+    <h1>Aap patient ho. <i class="fa-solid fa-user"></i></h1>
+    <p class="sub">Ye WhatsApp simulator hai — bilkul wahi brain jo real WhatsApp par chalega. Hinglish me likho, appointment book karo, phir <a href="/app.html">doctor dashboard</a> me wo appointment live dekho.</p>
+    <div class="card">
+      <h3>Aapki details (patient)</h3>
+      <div class="field"><label>Naam</label><input id="pName" value="Rahul Verma"></div>
+      <div class="field"><label>WhatsApp number (demo)</label><input id="pPhone" value=""></div>
+      <button class="reset" id="btnReset"><i class="fa-solid fa-rotate-left"></i> Nayi chat shuru karo (naya number)</button>
+    </div>
+    <div class="card">
+      <h3>Ye likhkar try karo <i class="fa-solid fa-hand-pointer"></i> (click bhi kar sakte ho)</h3>
+      <div class="trylist">
+        <button class="try"><i class="fa-solid fa-calendar-plus"></i> Kal shaam 6 baje appointment chahiye</button>
+        <button class="try"><i class="fa-solid fa-indian-rupee-sign"></i> Root canal ka charge kitna hai?</button>
+        <button class="try"><i class="fa-solid fa-clock"></i> Sunday ko clinic khula hai kya?</button>
+        <button class="try"><i class="fa-solid fa-tooth"></i> Braces karwana hai, Saturday mil sakta hai?</button>
+        <button class="try"><i class="fa-solid fa-triangle-exclamation"></i> Daant me bahut dard hai</button>
+        <button class="try"><i class="fa-solid fa-location-dot"></i> Address bhejo, parking hai?</button>
+        <button class="try"><i class="fa-solid fa-calendar-xmark"></i> Mera appointment cancel karna hai</button>
+      </div>
+    </div>
+    <div class="note">💡 <b>Magic trick:</b> "kal" ke liye appointment book karo → dashboard kholo → <b>"Send reminders"</b> dabao → yahan reminder message aa jayega. Phir "CONFIRM" likho. Yehi no-show guard hai.</div>
+  </div>
+
+  <div class="phonecol">
+    <div class="phone"><div class="screen">
+      <div class="wahead">
+        <div class="avatar"><i class="fa-solid fa-tooth"></i></div>
+        <div><div class="nm" id="hClinic">Sharma Dental Clinic</div><div class="st">online • AI receptionist <i class="fa-solid fa-robot"></i></div></div>
+        <div class="ic"><i class="fa-solid fa-video"></i><i class="fa-solid fa-phone"></i></div>
+      </div>
+      <div class="msgs" id="msgs">
+        <div class="day"><span>Aaj</span></div>
+        <div class="typing" id="typing"><div class="bub in"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div></div>
+      </div>
+      <div class="chips">
+        <button class="chip"><i class="fa-solid fa-calendar-plus"></i> BOOK</button>
+        <button class="chip"><i class="fa-solid fa-indian-rupee-sign"></i> FEES</button>
+        <button class="chip"><i class="fa-solid fa-clock"></i> TIMING</button>
+        <button class="chip"><i class="fa-solid fa-location-dot"></i> ADDRESS</button>
+        <button class="chip"><i class="fa-solid fa-hands-praying"></i> Namaste</button>
+      </div>
+      <div class="inputrow">
+        <input id="inp" placeholder='Likho: "kal 6 baje appointment chahiye"' autocomplete="off">
+        <button class="send" id="btnSend"><i class="fa-solid fa-paper-plane"></i></button>
+      </div>
+    </div></div>
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const msgs = $('msgs'), typing = $('typing');
+let lastCount = 0, busy = false;
+
+function randomPhone(){ return '98930' + String(Math.floor(10000 + Math.random()*89999)); }
+function getPhone(){
+  let p = $('pPhone').value.replace(/\D/g,'');
+  if (p.length === 10) p = '91' + p;
+  return p;
+}
+function fmtTime(ts){
+  const d = new Date(ts);
+  let h = d.getHours(), m = String(d.getMinutes()).padStart(2,'0');
+  const ap = h >= 12 ? 'PM' : 'AM'; h = h % 12 || 12;
+  return `${h}:${m} ${ap}`;
+}
+function bubble(dir, text, ts){
+  const b = document.createElement('div');
+  b.className = 'bub ' + dir;
+  b.innerHTML = text.replace(/\n/g, '<br>');
+  
+  const s = document.createElement('small');
+  s.innerHTML = fmtTime(ts || Date.now()) + (dir === 'out' ? ' <i class="fa-solid fa-check-double ticks"></i>' : '');
+  b.appendChild(s);
+  
+  msgs.insertBefore(b, typing);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+async function loadHistory(){
+  try{
+    const res = await fetch('/api/conversations');
+    const list = await res.json();
+    const conv = list.find(c => c.phone === getPhone());
+    msgs.querySelectorAll('.bub').forEach(x => { if(!x.closest('.typing')) x.remove(); });
+    if (conv){ 
+      conv.messages.forEach(m => bubble(m.dir === 'in' ? 'out' : 'in', m.text, m.ts)); 
+      lastCount = conv.messages.length; 
+    } else lastCount = 0;
+  }catch(e){}
+}
+async function poll(){
+  if (busy) return;
+  try{
+    const res = await fetch('/api/conversations');
+    const list = await res.json();
+    const conv = list.find(c => c.phone === getPhone());
+    if (conv && conv.messages.length > lastCount){
+      conv.messages.slice(lastCount).forEach(m => { if(m.dir === 'out') bubble('in', m.text, m.ts); });
+      lastCount = conv.messages.length;
+    }
+  }catch(e){}
+}
+async function send(text){
+  text = (text || $('inp').value).trim();
+  if (!text || busy) return;
+  busy = true; $('inp').value = '';
+  bubble('out', text);
+  lastCount++;
+  typing.style.display = 'block'; msgs.scrollTop = msgs.scrollHeight;
+  const started = Date.now();
+  try{
+    const res = await fetch('/api/chat', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ phone: getPhone(), name: $('pName').value.trim() || 'Patient', text })
+    });
+    const data = await res.json();
+    const wait = Math.max(0, 750 - (Date.now() - started));
+    setTimeout(() => {
+      typing.style.display = 'none';
+      bubble('in', data.reply || '…');
+      lastCount++;
+      busy = false;
+    }, wait);
+  }catch(e){
+    typing.style.display = 'none';
+    bubble('in', 'Server se connect nahi ho paya 😅 Page refresh karo.');
+    busy = false;
+  }
+}
+$('btnSend').onclick = () => send();
+$('inp').addEventListener('keydown', e => { if (e.key === 'Enter') send(); });
+document.querySelectorAll('.chip').forEach(c => c.onclick = () => {
+  const text = c.innerHTML.replace(/<i[^>]*><\/i>/g, '').trim();
+  send(text);
+});
+document.querySelectorAll('.try').forEach(c => c.onclick = () => {
+  const text = c.innerHTML.replace(/<i[^>]*><\/i>/g, '').trim();
+  send(text);
+});
+$('btnReset').onclick = () => { $('pPhone').value = randomPhone(); loadHistory(); };
+$('pPhone').addEventListener('change', loadHistory);
+
+(async () => {
+  $('pPhone').value = randomPhone();
+  let clinicName = 'Sharma Dental Clinic';
+  try{
+    const s = await (await fetch('/api/settings')).json();
+    clinicName = s.clinicName;
+    $('hClinic').textContent = clinicName;
+  }catch(e){}
+  await loadHistory();
+  if (lastCount === 0){
+    setTimeout(() => {
+      bubble('in', 'Namaste! 🙏 ' + clinicName + ' me swagat hai. Main AI receptionist hoon — 24×7.\n\nAppointment book karni ho to likho: "kal shaam 6 baje appointment chahiye" 😊');
+    }, 500);
+  }
+  setInterval(poll, 4000);
+})();
+</script>
+</body>
+</html>

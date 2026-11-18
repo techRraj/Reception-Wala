@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BookMyAppointment — Aapki clinic ka AI receptionist, WhatsApp par</title>
+<!-- FontAwesome for Real Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  :root{
+    --ink:#0c2b26; --teal:#0b3d36; --green:#12b76a; --wa:#25D366; --mint:#e7f8f0;
+    --cream:#faf8f3; --card:#ffffff; --line:#e5e0d5; --mut:#5c6f6a; --amber:#f59e0b;
+    --wa-bg:#efeae2; --wa-in:#ffffff; --wa-out:#d9fdd3; --wa-tick:#53bdeb;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans",sans-serif;background:var(--cream);color:var(--ink);line-height:1.6}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+  nav{position:sticky;top:0;background:rgba(250,248,243,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);z-index:50}
+  .navin{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px}
+  .logo .mark{width:36px;height:36px;border-radius:10px;background:var(--teal);color:#fff;display:grid;place-items:center;font-size:18px}
+  .navlinks{display:flex;gap:22px;align-items:center;font-size:14.5px;font-weight:600;color:var(--mut)}
+  .navlinks a:hover{color:var(--ink)}
+  .mobile-menu-btn{display:none;background:none;border:none;font-size:24px;color:var(--teal);cursor:pointer}
+  @media(max-width:768px){
+    .navlinks{display:none;position:absolute;top:64px;left:0;right:0;background:#fff;flex-direction:column;padding:20px;border-bottom:1px solid var(--line);gap:16px}
+    .navlinks.active{display:flex}
+    .mobile-menu-btn{display:block}
+  }
+  .btn{display:inline-block;padding:12px 22px;border-radius:12px;font-weight:700;font-size:15px;border:none;cursor:pointer;transition:.15s;text-align:center}
+  .btn-p{background:var(--teal);color:#fff}
+  .btn-p:hover{background:#0e4f46;transform:translateY(-1px)}
+  .btn-g{background:var(--wa);color:#06301f}
+  .btn-g:hover{filter:brightness(1.05);transform:translateY(-1px)}
+  .btn-o{background:transparent;border:1.5px solid var(--teal);color:var(--teal)}
+  .btn-o:hover{background:var(--mint)}
+  .btn-sm{padding:8px 16px;font-size:13.5px;border-radius:10px}
+  header.hero{padding:72px 0 56px;text-align:center}
+  .badge{display:inline-flex;gap:8px;align-items:center;background:var(--mint);border:1px solid #bfe8d4;color:#0a6b45;font-size:13px;font-weight:700;padding:6px 14px;border-radius:999px;margin-bottom:22px}
+  h1{font-size:clamp(30px,5vw,52px);line-height:1.15;font-weight:800;letter-spacing:-.5px;max-width:820px;margin:0 auto 18px}
+  h1 .hl{color:var(--green)}
+  .sub{font-size:17.5px;color:var(--mut);max-width:700px;margin:0 auto 30px}
+  .sub b{color:var(--ink)}
+  .ctas{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:26px}
+  .trust{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;font-size:13.5px;color:var(--mut);font-weight:600}
+  .trust span{display:flex;align-items:center;gap:6px}
+  section{padding:56px 0}
+  .kicker{font-size:13px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--green);margin-bottom:10px}
+  h2{font-size:clamp(24px,3.4vw,34px);font-weight:800;letter-spacing:-.3px;margin-bottom:14px}
+  .lead{color:var(--mut);max-width:640px;margin-bottom:34px}
+  .grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px}
+  .card .ic{font-size:26px;color:var(--teal);margin-bottom:12px}
+  .card h3{font-size:17px;margin-bottom:8px}
+  .card p{font-size:14.5px;color:var(--mut)}
+  .pain{background:var(--teal);color:#eaf6f1;border-radius:24px;padding:44px 36px;margin:0 20px}
+  .pain h2{color:#fff}
+  .pain .grid3 .card{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.14)}
+  .pain .card p{color:#bcd9d0}
+  .pain .big{font-size:30px;font-weight:800;color:var(--wa)}
+  .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;counter-reset:s}
+  .step{position:relative;padding:24px;border:1.5px dashed #cfe3da;border-radius:16px;background:#fff}
+  .step::before{counter-increment:s;content:counter(s);position:absolute;top:-16px;left:20px;width:32px;height:32px;border-radius:50%;background:var(--green);color:#fff;font-weight:800;display:grid;place-items:center}
+  .step h3{font-size:16px;margin:8px 0 6px}
+  .step p{font-size:14px;color:var(--mut)}
+  .roi{background:#fff;border:1px solid var(--line);border-radius:20px;padding:32px;display:grid;grid-template-columns:1.1fr .9fr;gap:32px}
+  @media(max-width:760px){.roi{grid-template-columns:1fr}}
+  .roi label{font-size:14px;font-weight:700;display:block;margin:16px 0 6px}
+  .roi input[type=range]{width:100%;accent-color:var(--green)}
+  .roi .val{color:var(--green);font-weight:800}
+  .roiout{background:var(--mint);border-radius:16px;padding:26px;display:flex;flex-direction:column;justify-content:center;gap:10px}
+  .roiout .num{font-size:34px;font-weight:800;color:var(--teal)}
+  .roiout small{color:var(--mut)}
+  .prices{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;align-items:stretch}
+  .price{background:#fff;border:1px solid var(--line);border-radius:18px;padding:28px;display:flex;flex-direction:column}
+  .price.hot{border:2px solid var(--green);position:relative;box-shadow:0 12px 32px rgba(18,183,106,.14)}
+  .price.hot::before{content:"SABSE POPULAR";position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--green);color:#fff;font-size:11px;font-weight:800;padding:4px 12px;border-radius:999px;letter-spacing:1px}
+  .price h3{font-size:16px;color:var(--mut)}
+  .price .amt{font-size:36px;font-weight:800;margin:8px 0 2px}
+  .price .amt small{font-size:14px;color:var(--mut);font-weight:600}
+  .price ul{list-style:none;margin:18px 0 22px;flex:1}
+  .price li{font-size:14px;padding:6px 0;color:#334742}
+  .price li::before{content:"\f00c";font-family:"Font Awesome 6 Free";font-weight:900;color:var(--green);margin-right:8px}
+  .pilot{margin-top:22px;text-align:center;font-size:14.5px;background:#fff7e8;border:1px solid #f3e2b8;color:#8a6116;padding:14px;border-radius:12px}
+  table.cmp{width:100%;border-collapse:collapse;background:#fff;border-radius:16px;overflow:hidden;border:1px solid var(--line);font-size:14px}
+  .cmp th,.cmp td{padding:13px 14px;text-align:left;border-bottom:1px solid var(--line)}
+  .cmp th{background:var(--teal);color:#fff;font-size:13px}
+  .cmp td:first-child{font-weight:700}
+  .cmp .yes{color:var(--green);font-weight:800}
+  .cmp .no{color:#c0392b}
+  .cmp tr:last-child td{border-bottom:none}
+  .cmp .us{background:var(--mint)}
+  details{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 22px;margin-bottom:12px}
+  summary{font-weight:700;cursor:pointer;font-size:15.5px}
+  details p{margin-top:10px;color:var(--mut);font-size:14.5px}
+  .final{background:var(--teal);border-radius:24px;margin:0 20px 60px;padding:52px 32px;text-align:center;color:#fff}
+  .final h2{color:#fff}
+  .final p{color:#bcd9d0;margin-bottom:26px}
+  footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13.5px;color:var(--mut)}
+  .foot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  
+  /* WhatsApp Chat Preview UI */
+  .chatpreview{max-width:420px;margin:36px auto 0;background:var(--wa-bg);border-radius:18px;padding:18px;text-align:left;box-shadow:0 16px 40px rgba(12,43,38,.12);background-image:url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');background-size:cover}
+  .bub{max-width:85%;padding:8px 10px;border-radius:8px;font-size:14px;margin-bottom:8px;white-space:pre-line;box-shadow:0 1px 0.5px rgba(11,20,26,.13);position:relative;line-height:1.4}
+  .bub.in{background:var(--wa-in);border-top-left-radius:0}
+  .bub.out{background:var(--wa-out);margin-left:auto;border-top-right-radius:0}
+  .bub small{display:block;text-align:right;font-size:10.5px;color:#667781;margin-top:4px;margin-left:20px}
+  .bub .ticks{color:var(--wa-tick);font-size:11px;margin-left:3px}
+</style>
+</head>
+<body>
+<nav><div class="wrap navin">
+  <a class="logo" href="/"><span class="mark"><i class="fa-brands fa-whatsapp"></i></span>Reception<span style="color:var(--green)">Wala</span></a>
+  <button class="mobile-menu-btn" onclick="document.querySelector('.navlinks').classList.toggle('active')"><i class="fa-solid fa-bars"></i></button>
+  <div class="navlinks">
+    <a href="#features">Features</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a>
+    <a class="btn btn-o btn-sm" href="/app.html">Doctor Dashboard</a>
+    <a class="btn btn-g btn-sm" href="/demo.html">Live Demo <i class="fa-solid fa-play"></i></a>
+  </div>
+</div></nav>
+
+<header class="hero"><div class="wrap">
+  <div class="badge"><i class="fa-solid fa-location-dot"></i> Indore me bana • Hinglish-first AI • Clinics ke liye</div>
+  <h1>Aapki clinic ka receptionist,<br>ab <span class="hl">WhatsApp par. 24×7.</span></h1>
+  <p class="sub">ReceptionWala aapke clinic ke <b>apne WhatsApp number</b> par Hinglish AI receptionist lagata hai — appointment booking, reminders, fees/timing ke jawab, aur purane patients ki wapsi. Receptionist ki salary <b>₹12,000/mahina</b>. ReceptionWala sirf <b>₹1,499/mahina</b> se.</p>
+  <div class="ctas">
+    <a class="btn btn-g" href="/demo.html"><i class="fa-solid fa-play"></i> Live demo — patient banke try karo</a>
+    <a class="btn btn-p" href="/app.html">Doctor dashboard dekho</a>
+  </div>
+  <div class="trust">
+    <span><i class="fa-solid fa-bolt"></i> 20-minute setup</span>
+    <span><i class="fa-solid fa-mobile-screen"></i> Aapka apna number</span>
+    <span><i class="fa-solid fa-language"></i> Hindi + English + Hinglish</span>
+    <span><i class="fa-solid fa-lock"></i> Patient data private</span>
+  </div>
+  
+  <div class="chatpreview">
+    <div class="bub in">Kal shaam 6 baje appointment chahiye, daant me dard hai 🦷<small>7:42 PM</small></div>
+    <div class="bub out">Ji zaroor! Kal ke liye ye slots available hain:<br>1) 5:40 PM<br>2) 6:00 PM<br>3) 6:20 PM<br>Number ya time likhein.<small>7:42 PM <i class="fa-solid fa-check-double ticks"></i></small></div>
+    <div class="bub in">2<small>7:43 PM</small></div>
+    <div class="bub out">Done! ✅ Kal 6:00 PM par Dr. Meena Sharma ke saath appointment confirm. Token #5. Reminder bhi mil jayega 📲<small>7:43 PM <i class="fa-solid fa-check-double ticks"></i></small></div>
+  </div>
+</div></header>
+
+<div class="pain"><div class="wrap">
+  <div class="kicker" style="color:var(--wa)">Problem jo har solo clinic jaanti hai</div>
+  <h2>Busy line = gaya patient. Har din.</h2>
+  <p style="color:#bcd9d0;max-width:640px;margin-bottom:30px">Patient call karta hai, line busy hai — wo agli clinic chala jaata hai. Aur raat ko jo WhatsApp message aaya, uska jawab subah tak koi nahi deta.</p>
+  <div class="grid3">
+    <div class="card"><div class="big">₹12,000+</div><h3>Receptionist ki monthly salary</h3><p>Training, chutti, turnover alag. Solo clinic ke liye bada kharcha — phir bhi 9-to-6 hi available.</p></div>
+    <div class="card"><div class="big">18–30%</div><h3>Calls jo miss hote hain</h3><p>Jab doctor khud busy hai ya reception par bheed — har missed call ek potential ₹500–₹4,500 ka patient.</p></div>
+    <div class="card"><div class="big">20%+</div><h3>No-shows bina reminder ke</h3><p>Patient bhool gaya, slot khaali gaya. Reminder ka matlab: kam khaali slots, zyada revenue.</p></div>
+  </div>
+</div></div>
+
+<section id="how"><div class="wrap">
+  <div class="kicker">Kaise kaam karta hai</div>
+  <h2>20 minute me clinic online. Seriously.</h2>
+  <p class="lead">Koi app download nahi, koi training nahi. Patient WhatsApp kholta hai — baaki ReceptionWala sambhalta hai.</p>
+  <div class="steps">
+    <div class="step"><h3>Number connect karo</h3><p>Clinic ka WhatsApp number Cloud API par connect hota hai. Number aapka hi rehta hai, patients ko kuch naya nahi karna.</p></div>
+    <div class="step"><h3>Clinic ki details bharo</h3><p>Timing, fees, services, doctor profile — bas ek form. AI usi se jawab deta hai, apni taraf se kuch nahi banata.</p></div>
+    <div class="step"><h3>AI receptionist ON</h3><p>Patient Hinglish me likhta hai, AI book karta hai, reminder bhejta hai — aur sab kuch aapke dashboard me dikhta hai.</p></div>
+  </div>
+</div></section>
+
+<section id="features" style="padding-top:20px"><div class="wrap">
+  <div class="kicker">Features</div>
+  <h2>Ek receptionist jo kabhi sota nahi</h2>
+  <p class="lead">Har feature ek hi goal ke liye: zyada booked slots, kam khaali kursi.</p>
+  <div class="grid3">
+    <div class="card"><div class="ic"><i class="fa-solid fa-language"></i></div><h3>Hinglish booking, naturally</h3><p>"Kal shaam 6 baje appointment chahiye" — AI samajhta hai, slots dikhata hai, confirm karta hai. Hindi, English, Hinglish sab.</p></div>
+    <div class="card"><div class="ic"><i class="fa-solid fa-bell"></i></div><h3>Smart reminders</h3><p>Ek din pehle WhatsApp reminder. Patient CONFIRM/CANCEL reply karta hai — no-shows ghat-te hain, slot dobara book hota hai.</p></div>
+    <div class="card"><div class="ic"><i class="fa-solid fa-rotate-right"></i></div><h3>Purane patients wapas</h3><p>6+ mahine se nahi aaye? One-click recall campaign. "Cleaning due hai" — sabse sasta naya revenue jo clinic ke paas already hai.</p></div>
+    <div class="card"><div class="ic"><i class="fa-solid fa-book-medical"></i></div><h3>Clinic knowledge se jawab</h3><p>Fees, parking, UPI, braces ka process — AI sirf aapki di hui jaankari se jawab deta hai (RAG). Hallucination nahi.</p></div>
+    <div class="card"><div class="ic"><i class="fa-solid fa-chart-pie"></i></div><h3>Doctor dashboard</h3><p>Aaj ke appointments, AI bookings, inbox, no-show rate, revenue estimate — sab ek screen par. Mobile se bhi.</p></div>
+    <div class="card"><div class="ic"><i class="fa-solid fa-shield-halved"></i></div><h3>Medical guardrails</h3><p>AI kabhi diagnosis ya dawai nahi batata. Emergency me turant hospital/108 bolta hai aur doctor ko alert karta hai.</p></div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="kicker">ROI Calculator</div>
+  <h2>Kitna paisa wapas aayega?</h2>
+  <p class="lead">Apne numbers daalo. Conservative estimate: roz ke 2 miss hue bookings me se sirf 1 bhi wapas aaya to?</p>
+  <div class="roi">
+    <div>
+      <label>Roz kitne patients dekhte ho? <span class="val" id="vPat">15</span></label>
+      <input type="range" id="rPat" min="5" max="60" value="15">
+      <label>Average fee per visit? <span class="val" id="vFee">₹700</span></label>
+      <input type="range" id="rFee" min="300" max="3000" step="50" value="700">
+      <label>Missed call/chat se roz kitne bookings jaate hain? <span class="val" id="vMiss">2</span></label>
+      <input type="range" id="rMiss" min="1" max="8" value="2">
+    </div>
+    <div class="roiout">
+      <small>Agar AI sirf 50% missed bookings recover kare:</small>
+      <div class="num" id="roiGain">₹21,000<span style="font-size:15px;color:var(--mut)">/mahina extra</span></div>
+      <small>ReceptionWala Growth plan: ₹1,999/mahina</small>
+      <div class="num" style="color:var(--green)" id="roiX">10.5× return</div>
+      <small style="font-size:12px">Illustrative estimate — actual results clinic par depend karte hain.</small>
+    </div>
+  </div>
+</div></section>
+
+<section id="pricing"><div class="wrap">
+  <div class="kicker">Pricing</div>
+  <h2>Receptionist se 8× sasta</h2>
+  <p class="lead">Simple monthly plans. Koi setup fee nahi, koi lock-in nahi. Annual plan me 2 mahine free.</p>
+  <div class="prices">
+    <div class="price">
+      <h3>Starter</h3><div class="amt">₹999<small>/mahina</small></div>
+      <ul><li>1 doctor, 1 WhatsApp number</li><li>Hinglish AI booking 24×7</li><li>Fees/timing/address FAQs</li><li>300 AI conversations/mo</li><li>Doctor dashboard</li></ul>
+      <a class="btn btn-o" href="/demo.html">Demo dekho</a>
+    </div>
+    <div class="price hot">
+      <h3>Growth</h3><div class="amt">₹1,999<small>/mahina</small></div>
+      <ul><li>Starter ka sab kuch</li><li>Smart reminders (no-show guard)</li><li>Patient recall campaigns</li><li>1,000 AI conversations/mo</li><li>Analytics + revenue estimate</li><li>WhatsApp support</li></ul>
+      <a class="btn btn-g" href="/demo.html">Demo dekho</a>
+    </div>
+    <div class="price">
+      <h3>Clinic+</h3><div class="amt">₹3,499<small>/mahina</small></div>
+      <ul><li>Growth ka sab kuch</li><li>2 numbers / 2 doctors</li><li>Custom knowledge base</li><li>3,000 AI conversations/mo</li><li>Priority support + onboarding call</li></ul>
+      <a class="btn btn-o" href="/demo.html">Demo dekho</a>
+    </div>
+  </div>
+  <div class="pilot">🎁 <b>Indore launch offer:</b> pehli 10 clinics ko 30-din free pilot + personal setup. Doctor sahab, sirf ek WhatsApp message door ho.</div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="kicker">Comparison</div>
+  <h2>Baaki options kyun nahi?</h2>
+  <div style="overflow-x:auto">
+  <table class="cmp">
+    <tr><th></th><th class="us">ReceptionWala</th><th>Human receptionist</th><th>Practo-type listing</th><th>Generic WhatsApp bot</th></tr>
+    <tr><td>Monthly cost</td><td class="us"><b>₹999–3,499</b></td><td>₹10,000–15,000</td><td>₹2,000–10,000 + commission</td><td>₹1,000–3,000 + setup</td></tr>
+    <tr><td>24×7 available</td><td class="us yes"><i class="fa-solid fa-check"></i></td><td class="no"><i class="fa-solid fa-xmark"></i></td><td class="yes"><i class="fa-solid fa-check"></i></td><td class="yes"><i class="fa-solid fa-check"></i></td></tr>
+    <tr><td>Hinglish samajhta hai</td><td class="us yes"><i class="fa-solid fa-check"></i></td><td class="yes"><i class="fa-solid fa-check"></i></td><td class="no"><i class="fa-solid fa-xmark"></i> (English-first)</td><td class="no"> Mostly <i class="fa-solid fa-xmark"></i></td></tr>
+    <tr><td>Aapka apna number & brand</td><td class="us yes"><i class="fa-solid fa-check"></i></td><td class="yes"><i class="fa-solid fa-check"></i></td><td class="no"><i class="fa-solid fa-xmark"></i> (unka platform)</td><td class="yes"><i class="fa-solid fa-check"></i></td></tr>
+    <tr><td>Clinic-specific booking + reminders</td><td class="us yes"><i class="fa-solid fa-check"></i></td><td>Manual</td><td>Platform bookings only</td><td class="no"><i class="fa-solid fa-xmark"></i> (DIY banana padta)</td></tr>
+    <tr><td>Purane patients recall</td><td class="us yes"><i class="fa-solid fa-check"></i></td><td class="no"><i class="fa-solid fa-xmark"></i></td><td class="no"><i class="fa-solid fa-xmark"></i></td><td class="no"><i class="fa-solid fa-xmark"></i></td></tr>
+  </table>
+  </div>
+</div></section>
+
+<section id="faq"><div class="wrap">
+  <div class="kicker">FAQ</div>
+  <h2>Doctor sahab ke sawal</h2>
+  <details><summary>Mera WhatsApp number mera hi rahega?</summary><p>Haan. Number clinic ka hota hai, aapke naam par. ReceptionWala sirf uska AI layer hai. Kabhi bhi band karo — number aur patient contacts aapke hi rehte hain.</p></details>
+  <details><summary>AI galat medical salah to nahi dega?</summary><p>Nahi — ye hard rule hai. AI sirf reception ka kaam karta hai: booking, fees, timing, clinic info. Symptoms ka jawab hamesha "doctor check-up ke baad batayenge" hota hai. Emergency me hospital/108 refer karta hai aur aapko alert karta hai.</p></details>
+  <details><summary>Patient data ka kya?</summary><p>Data encrypted store hota hai, sirf aapke dashboard me dikhta hai, kisi ko becha nahi jaata. DPDP Act 2023 ke hisaab se consent aur deletion support milta hai. Health advice kabhi store nahi hoti — sirf appointment details.</p></details>
+  <details><summary>Setup me kitna time lagega?</summary><p>20 minute. Hum WhatsApp Business API ka number connect karte hain, aap timing/fees/services ka form bharte ho, done. Indore me hum khud aakar setup karte hain (pilot clinics ke liye).</p></details>
+  <details><summary>Patient ko kuch naya seekhna padega?</summary><p>Bilkul nahi. Patient wahi WhatsApp use karta hai jo wo roz use karta hai. Bas clinic ke number par message karo — jaise dost ko karte ho. "Kal 6 baje appointment chahiye" — itna hi.</p></details>
+</div></section>
+
+<div class="final"><div class="wrap">
+  <h2>Khaali kursi sabse mehngi hoti hai.</h2>
+  <p>Aaj hi demo try karo — patient banke 30 second me appointment book karke dekho.</p>
+  <a class="btn btn-g" href="/demo.html"><i class="fa-solid fa-play"></i> Live demo try karo</a>
+  <a class="btn btn-o" style="border-color:#fff;color:#fff;margin-left:10px" href="/app.html">Doctor dashboard</a>
+</div></div>
+
+<footer><div class="wrap foot">
+  <div><b>ReceptionWala</b> — Indore me banaya, Bharat ki clinics ke liye. 🇮🇳<br>Ek solo-founder product by Rajkumar Chourasiya.</div>
+  <div>Demo build v0.1 • <a href="/demo.html" style="text-decoration:underline">Patient demo</a> • <a href="/app.html" style="text-decoration:underline">Dashboard</a></div>
+</div></footer>
+
+<script>
+function roi(){
+  const pat=+document.getElementById('rPat').value;
+  const fee=+document.getElementById('rFee').value;
+  const miss=+document.getElementById('rMiss').value;
+  document.getElementById('vPat').textContent=pat;
+  document.getElementById('vFee').textContent='₹'+fee;
+  document.getElementById('vMiss').textContent=miss;
+  const gain=Math.round(miss*0.5*fee*30);
+  document.getElementById('roiGain').innerHTML='₹'+gain.toLocaleString('en-IN')+'<span style="font-size:15px;color:var(--mut)">/mahina extra</span>';
+  document.getElementById('roiX').textContent=(gain/1999).toFixed(1)+'× return';
+}
+['rPat','rFee','rMiss'].forEach(id=>document.getElementById(id).addEventListener('input',roi));
+roi();
+</script>
+</body>
+</html>

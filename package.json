@@ -1,0 +1,14 @@
+{
+  "name": "receptionwala",
+  "version": "0.1.0",
+  "description": "AI WhatsApp receptionist for solo clinics in Bharat's tier-2/3 cities. Hinglish-first. Built for one-person operation.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "engines": { "node": ">=18" },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}

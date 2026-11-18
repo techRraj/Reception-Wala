@@ -1,0 +1,699 @@
+{
+  "settings": {
+    "clinicName": "Sharma Dental Clinic",
+    "doctorName": "Dr. Meena Sharma",
+    "doctorQual": "BDS, MDS (12+ yrs experience)",
+    "tagline": "Vijay Nagar, Indore",
+    "address": "2nd Floor, Vinay Nagar Complex, Scheme 54, Vijay Nagar, Indore (MP) — near C21 Mall",
+    "phoneDisplay": "+91 90000 12345",
+    "consultFee": 500,
+    "slotMinutes": 20,
+    "periods": [
+      {
+        "start": "10:00",
+        "end": "14:00"
+      },
+      {
+        "start": "17:00",
+        "end": "21:00"
+      }
+    ],
+    "closedDays": [
+      0
+    ],
+    "services": [
+      {
+        "name": "Consultation / Check-up",
+        "fee": 500,
+        "keywords": [
+          "consultation",
+          "checkup",
+          "check-up",
+          "dikhana",
+          "check"
+        ]
+      },
+      {
+        "name": "Cleaning / Scaling",
+        "fee": 1500,
+        "keywords": [
+          "cleaning",
+          "scaling",
+          "safai",
+          "clean"
+        ]
+      },
+      {
+        "name": "Filling (Cavity)",
+        "fee": 1200,
+        "keywords": [
+          "filling",
+          "cavity",
+          "keeda"
+        ]
+      },
+      {
+        "name": "Root Canal (RCT)",
+        "fee": 4500,
+        "keywords": [
+          "root canal",
+          "rct"
+        ]
+      },
+      {
+        "name": "Braces / Aligners Consult",
+        "fee": 1000,
+        "keywords": [
+          "braces",
+          "aligner",
+          "tedhe",
+          "wire"
+        ]
+      },
+      {
+        "name": "Kids Dentistry",
+        "fee": 600,
+        "keywords": [
+          "kids",
+          "bacche",
+          "child",
+          "bacha"
+        ]
+      },
+      {
+        "name": "Tooth Removal (Extraction)",
+        "fee": 1000,
+        "keywords": [
+          "extraction",
+          "nikalna",
+          "remove",
+          "todna"
+        ]
+      }
+    ],
+    "reminderTemplate": "Namaste {name} ji! 🙏 Kal {time} par {clinic} me {doctor} ke saath aapka appointment hai. Pahunchna ho to CONFIRM likhein, badalna ho to CHANGE, cancel karna ho to CANCEL likhein. — {clinic}",
+    "recallTemplate": "Namaste {name} ji! {clinic} ki taraf se yaad-dilaana: aapki last visit ko 6+ mahine ho gaye hain. Routine dental check-up (₹{fee}) se badi problems bachti hain. Appointment ke liye bas \"BOOK\" likhein. 🦷",
+    "llmEnabled": false,
+    "llmApiKey": "",
+    "llmModel": "google/gemini-2.0-flash-001",
+    "plan": "Growth — ₹1,999/mo (pilot)"
+  },
+  "kb": [
+    {
+      "id": "kb_64825s8",
+      "q": "Clinic ki timing kya hai? Sunday khula hai?",
+      "a": "Clinic Mon–Sat subah 10:00–2:00 aur shaam 5:00–9:00 khula rehta hai. Sunday closed. 🕐",
+      "tags": "timing time hours open close sunday chutti kab"
+    },
+    {
+      "id": "kb_mv055ik",
+      "q": "Payment kaise kar sakte hain? UPI chalega?",
+      "a": "Cash, UPI (GPay/PhonePe/Paytm) aur card — sab chalta hai. Insurance/cashless abhi available nahi hai.",
+      "tags": "payment upi gpay phonepe paytm cash card insurance cashless paisa"
+    },
+    {
+      "id": "kb_oksyz43",
+      "q": "Root canal me kitna time lagta hai? Dard hoga?",
+      "a": "RCT usually 1–3 sittings me complete hota hai (20–40 min per sitting). Local anesthesia me procedure painless hota hai — exact plan doctor check-up ke baad batayenge.",
+      "tags": "root canal rct dard pain sitting time kitna"
+    },
+    {
+      "id": "kb_txjf1eo",
+      "q": "Braces ka kharcha kitna aata hai?",
+      "a": "Braces consult ₹1,000 hai. Full treatment cost case par depend karti hai (metal/ceramic/aligners) — consult me doctor exact estimate de denge.",
+      "tags": "braces aligners tedhe daant wire cost kharcha"
+    },
+    {
+      "id": "kb_81756k0",
+      "q": "Bacchon ka ilaj hota hai? Kitni age se?",
+      "a": "Ji haan, Kids Dentistry available hai (1 saal ki age se). Pehli visit friendly hoti hai — bas dar mat bataiye, doctor handle kar lenge. 😊",
+      "tags": "kids bacche bacha child baby age children"
+    },
+    {
+      "id": "kb_b17pqwe",
+      "q": "Parking hai? Clinic kaise pahunchu?",
+      "a": "C21 Mall ke paas, Vinay Nagar Complex ki 2nd floor par. Building ke neeche free 2-wheeler parking, car parking mall me. Google Maps par \"Sharma Dental Clinic Vijay Nagar\" search karein.",
+      "tags": "parking address location kahan pata map directions reach"
+    },
+    {
+      "id": "kb_n9xdl49",
+      "q": "Pehli visit me kya lana chahiye?",
+      "a": "Bas aap aur purane dental reports/X-rays (agar hain). Baaki sab clinic me ho jayega. Pehli baar 10 min jaldi aayein taaki form bhar sakein.",
+      "tags": "first visit pehli kya lana bring reports xray x-ray documents"
+    },
+    {
+      "id": "kb_zhl43pf",
+      "q": "Reports/X-ray kaise milte hain?",
+      "a": "Digital X-ray same visit par WhatsApp par bhej diye jaate hain. Physical copy chahiye to reception se le sakte hain.",
+      "tags": "report reports xray x-ray digital copy milte"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "apt_3hajx6e",
+      "name": "Rohit Malviya",
+      "phone": "919812345001",
+      "date": "2026-11-18",
+      "time": "10:20",
+      "service": "Cleaning / Scaling",
+      "status": "completed",
+      "source": "ai",
+      "reminderSent": false,
+      "reminderConfirmed": false,
+      "createdAt": 1795010288063
+    },
+    {
+      "id": "apt_xdupwsr",
+      "name": "Sana Khan",
+      "phone": "919812345002",
+      "date": "2026-11-18",
+      "time": "11:00",
+      "service": "Consultation / Check-up",
+      "status": "completed",
+      "source": "ai",
+      "reminderSent": false,
+      "reminderConfirmed": false,
+      "createdAt": 1795010288063
+    },
+    {
+      "id": "apt_ddas9gg",
+      "name": "Deepak Joshi",
+      "phone": "919812345003",
+      "date": "2026-11-18",
+      "time": "12:00",
+      "service": "Filling (Cavity)",
+      "status": "completed",
+      "source": "front-desk",
+      "reminderSent": false,
+      "reminderConfirmed": false,
+      "createdAt": 1795010288063
+    },
+    {
+      "id": "apt_bz7fhjm",
+      "name": "Priya Agrawal",
+      "phone": "919812345004",
+      "date": "2026-11-18",
+      "time": "18:00",
+      "service": "Braces / Aligners Consult",
+      "status": "completed",
+      "source": "ai",
+      "reminderSent": false,
+      "reminderConfirmed": false,
+      "createdAt": 1795010288063
+    },
+    {
+      "id": "apt_8itmj8p",
+      "name": "Imran Sheikh",
+      "phone": "919812345005",
+      "date": "2026-11-18",
+      "time": "18:40",
+      "service": "Root Canal (RCT)",
+      "status": "completed",
+      "source": "ai",
+      "reminderSent": false,
+      "reminderConfirmed": false,
+      "createdAt": 1795010288063
+    },
+    {
+      "id": "apt_xpz1syz",
+      "name": "Kavita Yadav",
+      "phone": "919812345006",
+      "date": "2026-11-19",
+      "time": "10:00",
+      "service": "Consultation / Check-up",
+      "status": "confirmed",
+      "source": "ai",
+      "reminderSent": false,
+      "reminderConfirmed": false,
+      "createdAt": 1795010288063
+    },
+    {
+      "id": "apt_r08r653",
+      "name": "Arjun Patel",
+      "phone": "919812345007",
+      "date": "2026-11-19",
+      "time": "17:20",
+      "service": "Kids Dentistry",
+      "status": "confirmed",
+      "source": "ai",
+      "reminderSent": false,
+      "reminderConfirmed": false,
+      "createdAt": 1795010288063
+    },
+    {
+      "id": "apt_jhzl8up",
+      "name": "Neha Jain",
+      "phone": "919812345008",
+      "date": "2026-11-17",
+      "time": "19:00",
+      "service": "Consultation / Check-up",
+      "status": "no-show",
+      "source": "ai",
+      "reminderSent": false,
+      "reminderConfirmed": false,
+      "createdAt": 1795010288063
+    },
+    {
+      "id": "apt_26yfet6",
+      "name": "Rahul Verma",
+      "phone": "919893051894",
+      "date": "2026-11-19",
+      "time": "18:20",
+      "service": "Consultation / Check-up",
+      "status": "confirmed",
+      "source": "ai",
+      "reminderSent": false,
+      "reminderConfirmed": false,
+      "createdAt": 1795017688833
+    },
+    {
+      "id": "apt_3qcvfzg",
+      "name": "Rahul Verma",
+      "phone": "919893046055",
+      "date": "2026-11-21",
+      "time": "10:00",
+      "service": "Consultation / Check-up",
+      "status": "cancelled",
+      "source": "ai",
+      "reminderSent": false,
+      "reminderConfirmed": false,
+      "createdAt": 1795027500798
+    }
+  ],
+  "conversations": [
+    {
+      "id": "conv_8p9l049",
+      "phone": "919812345004",
+      "name": "Priya Agrawal",
+      "flags": {
+        "urgent": false
+      },
+      "state": {
+        "stage": "idle",
+        "draft": {}
+      },
+      "messages": [
+        {
+          "id": "m_ob9uu13",
+          "dir": "in",
+          "text": "Hi, braces ka consult karwana hai. Kal evening mil sakta hai?",
+          "ts": 1794992288063
+        },
+        {
+          "id": "m_ww77vgp",
+          "dir": "out",
+          "text": "Namaste Priya ji! 🙏 Ji bilkul. Kal shaam 5:20 ya 6:00 — kaunsa time theek rahega? (Braces consult ₹1,000, 20 min)",
+          "ts": 1794992328063
+        },
+        {
+          "id": "m_tjgjlut",
+          "dir": "in",
+          "text": "6 baje book kar do",
+          "ts": 1794995888063
+        },
+        {
+          "id": "m_my7a7ar",
+          "dir": "out",
+          "text": "Done! ✅ Aaj shaam 6:00 par Dr. Meena Sharma ke saath Braces Consult book ho gaya. Token #4. 10 min pehle aayein. Reminder kal aayega nahi — aaj hi hai 😄 Address: Vinay Nagar Complex, Scheme 54 (C21 Mall ke paas).",
+          "ts": 1794995918063
+        }
+      ],
+      "lastTs": 1794995918063
+    },
+    {
+      "id": "conv_uymmmas",
+      "phone": "919812345008",
+      "name": "Neha Jain",
+      "flags": {
+        "urgent": false
+      },
+      "state": {
+        "stage": "idle",
+        "draft": {}
+      },
+      "messages": [
+        {
+          "id": "m_b0y22dg",
+          "dir": "out",
+          "text": "Namaste Neha ji! Kal 7:00 PM par aapka appointment tha, aap aa nahi paye. Koi baat nahi — naya time book karna ho to bas \"BOOK\" likhein. 🙏",
+          "ts": 1794967088063
+        },
+        {
+          "id": "m_75m0a75",
+          "dir": "in",
+          "text": "Sorry, kaam aa gaya tha. Parso shaam ko dekh lo",
+          "ts": 1794970688063
+        }
+      ],
+      "lastTs": 1794970688063
+    },
+    {
+      "id": "conv_oz03yml",
+      "phone": "919812345101",
+      "name": "Suresh Chouhan",
+      "flags": {
+        "urgent": false
+      },
+      "state": {
+        "stage": "idle",
+        "draft": {}
+      },
+      "messages": [
+        {
+          "id": "m_76iuble",
+          "dir": "out",
+          "text": "Namaste Suresh ji! Sharma Dental Clinic ki taraf se yaad-dilaana: aapki last visit ko 6+ mahine ho gaye hain. Routine dental check-up (₹500) se badi problems bachti hain. Appointment ke liye bas \"BOOK\" likhein. 🦷",
+          "ts": 1795017516209
+        }
+      ],
+      "lastTs": 1795017516209
+    },
+    {
+      "id": "conv_qhm2rtd",
+      "phone": "919812345102",
+      "name": "Anita Bhargava",
+      "flags": {
+        "urgent": false
+      },
+      "state": {
+        "stage": "idle",
+        "draft": {}
+      },
+      "messages": [
+        {
+          "id": "m_azgvmaa",
+          "dir": "out",
+          "text": "Namaste Anita ji! Sharma Dental Clinic ki taraf se yaad-dilaana: aapki last visit ko 6+ mahine ho gaye hain. Routine dental check-up (₹500) se badi problems bachti hain. Appointment ke liye bas \"BOOK\" likhein. 🦷",
+          "ts": 1795017516209
+        }
+      ],
+      "lastTs": 1795017516209
+    },
+    {
+      "id": "conv_jc1sj5i",
+      "phone": "919812345103",
+      "name": "Farhan Ali",
+      "flags": {
+        "urgent": false
+      },
+      "state": {
+        "stage": "idle",
+        "draft": {}
+      },
+      "messages": [
+        {
+          "id": "m_6roo70n",
+          "dir": "out",
+          "text": "Namaste Farhan ji! Sharma Dental Clinic ki taraf se yaad-dilaana: aapki last visit ko 6+ mahine ho gaye hain. Routine dental check-up (₹500) se badi problems bachti hain. Appointment ke liye bas \"BOOK\" likhein. 🦷",
+          "ts": 1795017516209
+        }
+      ],
+      "lastTs": 1795017516209
+    },
+    {
+      "id": "conv_xisk9sz",
+      "phone": "919893051894",
+      "name": "Rahul Verma",
+      "flags": {
+        "urgent": false
+      },
+      "state": {
+        "stage": "idle",
+        "draft": {}
+      },
+      "messages": [
+        {
+          "id": "m_j3y327l",
+          "dir": "in",
+          "text": "Kal shaam 6 baje appointment chahiye",
+          "ts": 1795017607733
+        },
+        {
+          "id": "m_actckvd",
+          "dir": "out",
+          "text": "kal ke liye available slots:\n1) 6:00 PM\n2) 5:40 PM\n3) 6:20 PM\n\nNumber ya time likhein.",
+          "ts": 1795017607740
+        },
+        {
+          "id": "m_x816wh5",
+          "dir": "in",
+          "text": "6",
+          "ts": 1795017651155
+        },
+        {
+          "id": "m_uyh7k4w",
+          "dir": "out",
+          "text": "kal ke liye ye slots available hain:\n1) 6:00 PM\n2) 5:40 PM\n3) 6:20 PM\n\nNumber (1/2/3) ya apna time likhein.",
+          "ts": 1795017651157
+        },
+        {
+          "id": "m_wnxsgzf",
+          "dir": "in",
+          "text": "3",
+          "ts": 1795017669694
+        },
+        {
+          "id": "m_17k5biq",
+          "dir": "out",
+          "text": "Confirm karein 📋\n👤 Rahul Verma\n📅 kal (2026-11-19)\n🕐 6:20 PM\n🦷 Consultation / Check-up — ₹500\n\n\"haan\" likhein to book ho jayega.",
+          "ts": 1795017669696
+        },
+        {
+          "id": "m_z23n9p0",
+          "dir": "in",
+          "text": "yes",
+          "ts": 1795017688832
+        },
+        {
+          "id": "m_hd1wyvf",
+          "dir": "out",
+          "text": "Done! ✅ Appointment confirm:\n👤 Rahul Verma\n📅 kal (2026-11-19) 🕐 6:20 PM\n🦷 Consultation / Check-up\n🎫 Token #3\n\nDr. Meena Sharma ke saath Sharma Dental Clinic. 10 min pehle aayein. Ek din pehle reminder aayega 📲\n📍 2nd Floor, Vinay Nagar Complex, Scheme 54, Vijay Nagar, Indore (MP) — near C21 Mall\n\nBadalna ho to \"CHANGE\", cancel karna ho to \"CANCEL\" likhein.",
+          "ts": 1795017688834
+        },
+        {
+          "id": "m_m8roafl",
+          "dir": "in",
+          "text": "Address bhejo, parking hai?",
+          "ts": 1795017715414
+        },
+        {
+          "id": "m_6hyg51w",
+          "dir": "out",
+          "text": "📍 2nd Floor, Vinay Nagar Complex, Scheme 54, Vijay Nagar, Indore (MP) — near C21 Mall\n\nGoogle Maps par \"Sharma Dental Clinic Vijay Nagar\" search karein. Free 2-wheeler parking building ke neeche hai.",
+          "ts": 1795017715422
+        },
+        {
+          "id": "m_5r9xi0l",
+          "dir": "in",
+          "text": "Daant me bahut dard hai",
+          "ts": 1795017725546
+        },
+        {
+          "id": "m_gg6z45x",
+          "dir": "out",
+          "text": "Samajh sakta hoon 🙏 Main receptionist hoon, isliye medical salah Dr. Meena Sharma hi denge — wo check-up ke baad sahi treatment batayenge. Zyada takleef lag rahi hai — main sabse pehla slot dekh sakta hoon, \"abhi slot\" likhein. Agar bahut zyada problem hai to turant clinic aayein ya call karein.",
+          "ts": 1795017725546
+        },
+        {
+          "id": "m_xbnxq0c",
+          "dir": "in",
+          "text": "Sunday ko clinic khula hai kya?",
+          "ts": 1795017749809
+        },
+        {
+          "id": "m_tzk5om5",
+          "dir": "out",
+          "text": "🕐 Sharma Dental Clinic ki timing:\nSomvaar–Shanivaar: subah 10:00–2:00, shaam 5:00–9:00\nSunday: closed\n\nAppointment book karna ho to \"BOOK\" likhein — bina wait ke slot mil jayega 👍",
+          "ts": 1795017749810
+        }
+      ],
+      "lastTs": 1795017749810
+    },
+    {
+      "id": "conv_i0yfqrn",
+      "phone": "919893046055",
+      "name": "Rahul Verma",
+      "flags": {
+        "urgent": true
+      },
+      "state": {
+        "stage": "idle",
+        "draft": {}
+      },
+      "messages": [
+        {
+          "id": "m_hnpxa5b",
+          "dir": "in",
+          "text": "Daant me bahut dard hai",
+          "ts": 1795027456661
+        },
+        {
+          "id": "m_o0d2by3",
+          "dir": "out",
+          "text": "Samajh sakta hoon 🙏 Main receptionist hoon, isliye medical salah Dr. Meena Sharma hi denge — wo check-up ke baad sahi treatment batayenge. Zyada takleef lag rahi hai — main sabse pehla slot dekh sakta hoon, \"abhi slot\" likhein. Agar bahut zyada problem hai to turant clinic aayein ya call karein.",
+          "ts": 1795027456667
+        },
+        {
+          "id": "m_959yfhj",
+          "dir": "in",
+          "text": "Sunday ko clinic khula hai kya?",
+          "ts": 1795027458518
+        },
+        {
+          "id": "m_c9erywh",
+          "dir": "out",
+          "text": "🕐 Sharma Dental Clinic ki timing:\nSomvaar–Shanivaar: subah 10:00–2:00, shaam 5:00–9:00\nSunday: closed\n\nAppointment book karna ho to \"BOOK\" likhein — bina wait ke slot mil jayega 👍",
+          "ts": 1795027458518
+        },
+        {
+          "id": "m_k7ou068",
+          "dir": "in",
+          "text": "Root canal ka charge kitna hai?",
+          "ts": 1795027460045
+        },
+        {
+          "id": "m_dmfptum",
+          "dir": "out",
+          "text": "Root Canal (RCT) ka charge ₹4500 hai. Book karna ho to \"BOOK\" likhein 🙏",
+          "ts": 1795027460045
+        },
+        {
+          "id": "m_qux2fp5",
+          "dir": "in",
+          "text": "Mera appointment cancel karna hai",
+          "ts": 1795027461719
+        },
+        {
+          "id": "m_hu6cm2k",
+          "dir": "out",
+          "text": "Aapka koi upcoming appointment nahi mila. Naya book karna ho to \"BOOK\" likhein 🙏",
+          "ts": 1795027461719
+        },
+        {
+          "id": "m_osft6w8",
+          "dir": "in",
+          "text": "BOOK",
+          "ts": 1795027472503
+        },
+        {
+          "id": "m_5dt6vpg",
+          "dir": "out",
+          "text": "Ji zaroor! Kis din aur time par aana chahenge? Jaise \"kal shaam 6 baje\" ya \"saturday subah 11\". Clinic Mon–Sat 10–2 & 5–9, Sunday closed.",
+          "ts": 1795027472505
+        },
+        {
+          "id": "m_576cjgv",
+          "dir": "in",
+          "text": "saturday",
+          "ts": 1795027488346
+        },
+        {
+          "id": "m_pgsn8zr",
+          "dir": "out",
+          "text": "parso ke liye ye slots available hain:\n1) 10:00 AM\n2) 5:00 PM\n3) 8:40 PM\n\nNumber (1/2/3) ya apna time likhein.",
+          "ts": 1795027488350
+        },
+        {
+          "id": "m_14p7m2i",
+          "dir": "in",
+          "text": "1",
+          "ts": 1795027492855
+        },
+        {
+          "id": "m_ig0cg7l",
+          "dir": "out",
+          "text": "Confirm karein 📋\n👤 Rahul Verma\n📅 parso (2026-11-21)\n🕐 10:00 AM\n🦷 Consultation / Check-up — ₹500\n\n\"haan\" likhein to book ho jayega.",
+          "ts": 1795027492856
+        },
+        {
+          "id": "m_ncg9jpl",
+          "dir": "in",
+          "text": "yes",
+          "ts": 1795027500797
+        },
+        {
+          "id": "m_n7zilsk",
+          "dir": "out",
+          "text": "Done! ✅ Appointment confirm:\n👤 Rahul Verma\n📅 parso (2026-11-21) 🕐 10:00 AM\n🦷 Consultation / Check-up\n🎫 Token #1\n\nDr. Meena Sharma ke saath Sharma Dental Clinic. 10 min pehle aayein. Ek din pehle reminder aayega 📲\n📍 2nd Floor, Vinay Nagar Complex, Scheme 54, Vijay Nagar, Indore (MP) — near C21 Mall\n\nBadalna ho to \"CHANGE\", cancel karna ho to \"CANCEL\" likhein.",
+          "ts": 1795027500798
+        },
+        {
+          "id": "m_fxn12ey",
+          "dir": "in",
+          "text": "Mera appointment cancel karna hai",
+          "ts": 1795027506701
+        },
+        {
+          "id": "m_oxuvi3z",
+          "dir": "out",
+          "text": "Aapka appointment: parso 10:00 AM — Consultation / Check-up. Kya ise cancel karun? \"haan\" likhein to cancel ho jayega.",
+          "ts": 1795027506702
+        },
+        {
+          "id": "m_jyh2vij",
+          "dir": "in",
+          "text": "haa",
+          "ts": 1795027516632
+        },
+        {
+          "id": "m_uizjeen",
+          "dir": "out",
+          "text": "Theek hai, appointment waise hi rakha hai 👍",
+          "ts": 1795027516632
+        },
+        {
+          "id": "m_fz1xlnm",
+          "dir": "in",
+          "text": "kya appointment cancel ho gya",
+          "ts": 1795027551298
+        },
+        {
+          "id": "m_mtgqd7d",
+          "dir": "out",
+          "text": "Aapka appointment: parso 10:00 AM — Consultation / Check-up. Kya ise cancel karun? \"haan\" likhein to cancel ho jayega.",
+          "ts": 1795027551299
+        },
+        {
+          "id": "m_wmgpzlk",
+          "dir": "in",
+          "text": "haan",
+          "ts": 1795027563145
+        },
+        {
+          "id": "m_15xt5xa",
+          "dir": "out",
+          "text": "Cancel kar diya ✅ Koi charge nahi. Jab dobara aana ho, bas \"BOOK\" likhein. Apna khayal rakhein! 🙏",
+          "ts": 1795027563146
+        }
+      ],
+      "lastTs": 1795027563146
+    }
+  ],
+  "recallPatients": [
+    {
+      "id": "rc_5l4z2wi",
+      "name": "Suresh Chouhan",
+      "phone": "919812345101",
+      "lastVisitMonths": 8,
+      "sent": true
+    },
+    {
+      "id": "rc_lq4wkz2",
+      "name": "Anita Bhargava",
+      "phone": "919812345102",
+      "lastVisitMonths": 7,
+      "sent": true
+    },
+    {
+      "id": "rc_m02z8i2",
+      "name": "Farhan Ali",
+      "phone": "919812345103",
+      "lastVisitMonths": 11,
+      "sent": true
+    }
+  ],
+  "meta": {
+    "seededAt": 1795010288063,
+    "seedDate": "2026-11-18"
+  }
+}

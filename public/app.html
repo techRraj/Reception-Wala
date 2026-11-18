@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Doctor Dashboard — ReceptionWala</title>
+<!-- FontAwesome for Real Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  :root{--bg:#0d1512;--panel:#131f1a;--panel2:#182821;--line:#22352d;--ink:#e8f2ed;--mut:#8fa89e;
+    --green:#12b76a;--wa:#25D366;--amber:#f5b942;--red:#ef6a5a;--blue:#5ab0f5;--mint:#0f2f22}
+  *{margin:0;padding:0;box-sizing:border-box}
+  
+  /* Global overflow fix */
+  html, body { max-width: 100vw; overflow-x: hidden; }
+  body{font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans",sans-serif;background:var(--bg);color:var(--ink);font-size:14.5px}
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit}
+  
+  /* Layout */
+  .layout{display:grid;grid-template-columns:230px 1fr;min-height:100vh;width:100%}
+  
+  /* Sidebar */
+  .side{background:var(--panel);border-right:1px solid var(--line);padding:20px 14px;display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100vh;z-index:100;transition:transform .3s ease}
+  .side.open{transform:translateX(0)}
+  
+  /* Mobile Header & Overlay */
+  .mobile-header{display:none;background:var(--panel);border-bottom:1px solid var(--line);padding:14px 20px;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:80;width:100%}
+  .mobile-header .logo{font-size:16px;padding:0}
+  .overlay{display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,.6);z-index:90}
+  .overlay.active{display:block}
+  
+  @media(max-width:900px){
+    .layout{grid-template-columns:1fr}
+    .side{position:fixed;left:0;top:0;transform:translateX(-100%);width:250px;height:100vh}
+    .mobile-header{display:flex}
+    .main{padding:16px}
+    .topbar{flex-direction:column;align-items:flex-start;gap:12px}
+    .topbar h1{font-size:19px}
+  }
+  
+  /* Logo & Nav */
+  .logo{display:flex;align-items:center;gap:9px;font-weight:800;font-size:17px;padding:6px 10px 18px}
+  .logo .mark{width:32px;height:32px;border-radius:9px;background:var(--green);display:grid;place-items:center;font-size:16px;color:#04160d}
+  .nav{display:flex;flex-direction:column;gap:3px}
+  .nav button{display:flex;gap:10px;align-items:center;background:none;border:none;color:var(--mut);padding:11px 12px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;text-align:left;transition:.15s}
+  .nav button:hover{background:var(--panel2);color:var(--ink)}
+  .nav button.on{background:var(--mint);color:var(--wa)}
+  
+  /* Sidefoot */
+  .sidefoot{margin-top:auto;font-size:12px;color:var(--mut);padding:10px;border-top:1px solid var(--line)}
+  .sidefoot .dotlive{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--wa);margin-right:6px}
+  .sidefoot button{margin-top:10px;width:100%;background:none;border:1px solid var(--line);color:var(--mut);padding:7px;border-radius:8px;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+  .sidefoot button:hover{color:var(--red);border-color:var(--red)}
+  
+  /* Main Content */
+  .main{padding:22px 26px;max-width:1200px;margin:0 auto;width:100%;box-sizing:border-box}
+  .topbar{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:22px;flex-wrap:wrap}
+  .topbar .sub{color:var(--mut);font-size:13px;margin-top:2px}
+  .pill{background:var(--mint);color:var(--wa);font-size:12px;font-weight:700;padding:6px 12px;border-radius:999px;border:1px solid #1d4a37;display:inline-flex;align-items:center;gap:6px}
+  
+  /* Buttons */
+  .btn{border:none;border-radius:10px;padding:10px 16px;font-weight:700;font-size:13.5px;cursor:pointer;transition:.13s;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+  .btn-p{background:var(--green);color:#04160d}
+  .btn-p:hover{filter:brightness(1.1)}
+  .btn-o{background:none;border:1px solid var(--line);color:var(--ink)}
+  .btn-o:hover{border-color:var(--green);color:var(--wa)}
+  .btn-wa{background:var(--wa);color:#04160d}
+  .btn-sm{padding:6px 10px;font-size:12px;border-radius:8px}
+  
+  /* Tabs */
+  .tab{display:none}.tab.on{display:block}
+  
+  /* Stats Grid - Fixed for mobile */
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:20px}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px}
+  .stat .lb{font-size:12px;color:var(--mut);font-weight:600;margin-bottom:6px}
+  .stat .vl{font-size:24px;font-weight:800}
+  .stat .hint{font-size:11.5px;color:var(--mut);margin-top:4px}
+  .stat .vl.g{color:var(--wa)}.stat .vl.a{color:var(--amber)}.stat .vl.b{color:var(--blue)}
+  
+  /* Panels */
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:16px;overflow:hidden}
+  .panel h3{font-size:15px;margin-bottom:14px;display:flex;align-items:center;gap:8px;justify-content:space-between;flex-wrap:wrap}
+  .row2{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}
+  @media(max-width:1000px){.row2{grid-template-columns:1fr}}
+  
+  /* Tables */
+  .table-responsive{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:600px}
+  th{color:var(--mut);font-size:11.5px;text-transform:uppercase;letter-spacing:.6px;text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+  td{padding:10px;border-bottom:1px solid var(--line);vertical-align:middle}
+  tr:last-child td{border-bottom:none}
+  .status{font-size:11.5px;font-weight:800;padding:4px 9px;border-radius:999px;white-space:nowrap;display:inline-block}
+  .st-confirmed{background:#0f2f22;color:var(--wa)}
+  .st-completed{background:#12283b;color:var(--blue)}
+  .st-cancelled{background:#2b1a17;color:var(--red)}
+  .st-no-show{background:#33270f;color:var(--amber)}
+  .src{font-size:11px;color:var(--mut)}
+  .acts{display:flex;gap:5px;flex-wrap:wrap}
+  .act{background:var(--panel2);border:1px solid var(--line);color:var(--mut);border-radius:7px;padding:4px 8px;font-size:11.5px;cursor:pointer;font-weight:700}
+  .act:hover{color:var(--ink);border-color:var(--mut)}
+  .act.ok:hover{color:var(--wa);border-color:var(--wa)}
+  .act.warn:hover{color:var(--amber);border-color:var(--amber)}
+  .act.bad:hover{color:var(--red);border-color:var(--red)}
+  
+  /* Forms */
+  .filters{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+  .f{background:none;border:1px solid var(--line);color:var(--mut);padding:7px 14px;border-radius:999px;font-size:12.5px;font-weight:700;cursor:pointer}
+  .f.on{background:var(--mint);color:var(--wa);border-color:#1d4a37}
+  .form{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;align-items:end}
+  .field label{font-size:11.5px;font-weight:700;color:var(--mut);display:block;margin-bottom:5px}
+  .field input,.field select,.field textarea{width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--ink);border-radius:9px;padding:9px 11px;font-size:13.5px;font-family:inherit}
+  .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--green)}
+  .field textarea{resize:vertical;min-height:70px}
+  
+  /* Inbox Layout */
+  .inbox{display:grid;grid-template-columns:300px 1fr;gap:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;min-height:520px;background:var(--panel)}
+  @media(max-width:800px){
+    .inbox{grid-template-columns:1fr;min-height:auto}
+    .convlist{border-right:none;border-bottom:1px solid var(--line);max-height:200px}
+    .thread{max-height:500px}
+  }
+  .convlist{border-right:1px solid var(--line);overflow-y:auto;max-height:640px}
+  .conv{padding:13px 14px;border-bottom:1px solid var(--line);cursor:pointer}
+  .conv:hover{background:var(--panel2)}
+  .conv.on{background:var(--mint)}
+  .conv .nm{font-weight:700;font-size:13.5px;display:flex;justify-content:space-between;gap:6px}
+  .conv .pv{font-size:12px;color:var(--mut);margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .conv .tm{font-size:10.5px;color:var(--mut);font-weight:600}
+  .urgent{color:var(--red);font-size:11px;font-weight:800;display:inline-flex;align-items:center;gap:4px}
+  
+  /* Chat Thread */
+  .thread{display:flex;flex-direction:column;max-height:640px}
+  .threadhead{padding:13px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+  .threadhead .nm{font-weight:800}
+  .threadhead .ph{font-size:12px;color:var(--mut)}
+  .threadmsgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:8px;background:var(--bg)}
+  
+  /* Chat Bubbles */
+  .mb{max-width:85%;padding:9px 12px;border-radius:8px;font-size:13.3px;line-height:1.45;white-space:pre-line;word-wrap:break-word;box-shadow:0 1px 0.5px rgba(0,0,0,.13);position:relative}
+  .mb.in{background:var(--panel2);border:1px solid var(--line);border-top-left-radius:0;align-self:flex-start}
+  .mb.out{background:var(--mint);border:1px solid #1d4a37;border-top-right-radius:0;align-self:flex-end}
+  .mb small{display:block;font-size:10px;color:var(--mut);margin-top:4px;text-align:right}
+  
+  .empty{color:var(--mut);text-align:center;padding:60px 20px;font-size:13.5px}
+  
+  /* Knowledge Base */
+  .kbcard{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+  .kbcard .q{font-weight:700;font-size:13.5px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  .kbcard .a{color:var(--mut);font-size:13px;margin-top:6px;word-wrap:break-word}
+  .kbcard .del{background:none;border:none;color:var(--mut);cursor:pointer;font-size:14px}
+  .kbcard .del:hover{color:var(--red)}
+  
+  /* Chart */
+  .chart{display:flex;align-items:flex-end;gap:10px;height:150px;padding:10px 4px 0}
+  .bar{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end}
+  .bar .col{width:100%;max-width:44px;border-radius:6px 6px 3px 3px;background:linear-gradient(180deg,var(--wa),#0d8a4f);position:relative;min-height:3px}
+  .bar .col .ai{position:absolute;bottom:0;left:0;right:0;background:#0a5c38;border-radius:0 0 3px 3px}
+  .bar .n{font-size:11px;color:var(--mut);font-weight:700}
+  .bar .d{font-size:10.5px;color:var(--mut)}
+  .legend{display:flex;gap:16px;font-size:11.5px;color:var(--mut);margin-top:10px;flex-wrap:wrap}
+  .legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px}
+  
+  /* Settings */
+  .switch{display:flex;align-items:flex-start;gap:10px;font-size:13.5px;font-weight:600;line-height:1.4}
+  .switch input { margin-top:3px; }
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media(max-width:700px){.grid2{grid-template-columns:1fr}}
+  
+  .hintbox{font-size:12.5px;color:var(--mut);background:var(--panel2);border:1px dashed var(--line);border-radius:10px;padding:10px 12px;margin-top:12px}
+  
+  /* Toast */
+  .toast{position:fixed;bottom:24px;right:24px;background:var(--panel);border:1px solid var(--green);color:var(--ink);padding:14px 18px;border-radius:12px;font-size:13.5px;font-weight:600;box-shadow:0 12px 32px rgba(0,0,0,.4);opacity:0;transform:translateY(10px);transition:.25s;z-index:999;max-width:340px;word-break:break-word}
+  .toast.show{opacity:1;transform:none}
+  @media(max-width:500px){.toast{left:16px;right:16px;bottom:16px;max-width:none}}
+</style>
+</head>
+<body>
+
+<!-- Mobile Header -->
+<div class="mobile-header">
+  <a class="logo" href="/"><span class="mark"><i class="fa-brands fa-whatsapp"></i></span>ReceptionWala</a>
+  <button class="btn btn-o btn-sm" onclick="document.querySelector('.side').classList.toggle('open'); document.querySelector('.overlay').classList.toggle('active')"><i class="fa-solid fa-bars"></i></button>
+</div>
+
+<!-- Overlay for Mobile Sidebar -->
+<div class="overlay" onclick="document.querySelector('.side').classList.remove('open'); this.classList.remove('active')"></div>
+
+<div class="layout">
+  <!-- Sidebar -->
+  <aside class="side">
+    <a class="logo" href="/"><span class="mark"><i class="fa-brands fa-whatsapp"></i></span>ReceptionWala</a>
+    <div class="nav">
+      <button data-tab="overview" class="on"><i class="fa-solid fa-chart-pie"></i> Overview</button>
+      <button data-tab="appointments"><i class="fa-regular fa-calendar-days"></i> Appointments</button>
+      <button data-tab="inbox"><i class="fa-solid fa-comments"></i> WhatsApp Inbox <span id="urgentBadge"></span></button>
+      <button data-tab="knowledge"><i class="fa-solid fa-book-medical"></i> Knowledge Base</button>
+      <button data-tab="settings"><i class="fa-solid fa-gear"></i> Settings</button>
+    </div>
+    <div class="sidefoot">
+      <span class="dotlive"></span><span id="modeLabel">Demo mode — simulator connected</span><br><br>
+      <a href="/demo.html" style="color:var(--wa);font-weight:700"><i class="fa-solid fa-arrow-up-right-from-square"></i> Patient demo kholo</a>
+      <button id="btnReseed"><i class="fa-solid fa-rotate-left"></i> Reset demo data</button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main">
+    <div class="topbar">
+      <div><h1 id="clinicTitle">Sharma Dental Clinic</h1><div class="sub" id="dateLine"></div></div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <span class="pill" id="planPill"><i class="fa-solid fa-star"></i> Growth plan</span>
+        <a class="btn btn-wa" href="/demo.html" target="_blank"><i class="fa-solid fa-play"></i> Patient demo</a>
+      </div>
+    </div>
+
+    <!-- OVERVIEW -->
+    <div class="tab on" id="tab-overview">
+      <div class="stats" id="statCards"></div>
+      <div class="row2">
+        <div class="panel">
+          <h3>Bookings — last 7 days <span style="font-size:11px;color:var(--mut);font-weight:600">total vs AI <i class="fa-solid fa-robot"></i></span></h3>
+          <div class="chart" id="chart"></div>
+          <div class="legend"><span><i style="background:var(--wa)"></i>Total bookings</span><span><i style="background:#0a5c38"></i>AI se book hue</span></div>
+        </div>
+        <div class="panel">
+          <h3><i class="fa-solid fa-bolt"></i> Quick actions</h3>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <button class="btn btn-p" id="btnRemind"><i class="fa-solid fa-bell"></i> Send kal ke reminders</button>
+            <button class="btn btn-o" id="btnRecall"><i class="fa-solid fa-rotate-right"></i> Purane patients ko recall bhejo</button>
+            <a class="btn btn-o" href="/demo.html" target="_blank" style="text-align:center"><i class="fa-solid fa-flask"></i> Patient banke test karo</a>
+          </div>
+          <div class="hintbox" id="recallInfo">Recall = 6+ mahine se nahi aaye patients. Marketing message ~₹0.86/msg. Reminders (utility) ~₹0.12/msg. Patient ke reply free.</div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>Aaj & aane wale appointments <button class="btn btn-o btn-sm" onclick="showTab('appointments')">Sab dekho <i class="fa-solid fa-arrow-right"></i></button></h3>
+        <div id="upcomingMini" class="table-responsive"></div>
+      </div>
+    </div>
+
+    <!-- APPOINTMENTS -->
+    <div class="tab" id="tab-appointments">
+      <div class="panel">
+        <h3><i class="fa-solid fa-plus"></i> Naya appointment (front desk)</h3>
+        <div class="form">
+          <div class="field"><label>Patient naam</label><input id="aName" placeholder="e.g. Amit Jain"></div>
+          <div class="field"><label>Phone</label><input id="aPhone" placeholder="10-digit"></div>
+          <div class="field"><label>Date</label><input id="aDate" type="date"></div>
+          <div class="field"><label>Time</label><input id="aTime" type="time" step="1200"></div>
+          <div class="field"><label>Service</label><select id="aService"></select></div>
+          <button class="btn btn-p" id="btnAddAppt">Book</button>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="filters">
+          <button class="f on" data-f="today">Aaj</button>
+          <button class="f" data-f="upcoming">Upcoming</button>
+          <button class="f" data-f="all">Sab</button>
+        </div>
+        <div class="table-responsive">
+          <table>
+            <thead><tr><th>Kab</th><th>Patient</th><th>Service</th><th>Source</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="apptRows"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- INBOX -->
+    <div class="tab" id="tab-inbox">
+      <div class="inbox">
+        <div class="convlist" id="convList"></div>
+        <div class="thread" id="thread"><div class="empty"><i class="fa-solid fa-arrow-left"></i> Conversation select karo.<br><br><i class="fa-solid fa-robot"></i> = AI ne handle kiya. Patient demo se message bhejo, yahan live dikhega.</div></div>
+      </div>
+    </div>
+
+    <!-- KNOWLEDGE -->
+    <div class="tab" id="tab-knowledge">
+      <div class="panel">
+        <h3><i class="fa-solid fa-plus"></i> Clinic knowledge add karo</h3>
+        <div class="field" style="margin-bottom:10px"><label>Sawal (jaise patient poochhe)</label><input id="kbQ" placeholder="e.g. Kya clinic me AC hai?"></div>
+        <div class="field" style="margin-bottom:10px"><label>Jawab (Hinglish me, short)</label><textarea id="kbA" placeholder="Ji haan, poora clinic AC hai..."></textarea></div>
+        <div class="grid2">
+          <div class="field"><label>Keywords (space-separated)</label><input id="kbTags" placeholder="ac thanda cool"></div>
+          <button class="btn btn-p" id="btnKbAdd" style="height:38px">Add karo</button>
+        </div>
+        <div class="hintbox">Ye mini-RAG hai: AI sirf yahan likhi jaankari se jawab deta hai. Production me yahi pattern pgvector + embeddings par scale hota hai (multi-doc upload).</div>
+      </div>
+      <div id="kbList"></div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="tab" id="tab-settings">
+      <div class="panel">
+        <h3><i class="fa-solid fa-hospital"></i> Clinic profile</h3>
+        <div class="grid2">
+          <div class="field"><label>Clinic naam</label><input id="sClinic"></div>
+          <div class="field"><label>Doctor naam</label><input id="sDoctor"></div>
+          <div class="field"><label>Qualification</label><input id="sQual"></div>
+          <div class="field"><label>Area / city</label><input id="sTagline"></div>
+          <div class="field"><label>Consultation fee (₹)</label><input id="sFee" type="number"></div>
+          <div class="field"><label>Slot length (min)</label><input id="sSlot" type="number" min="10" step="5"></div>
+        </div>
+        <div class="field" style="margin-top:10px"><label>Address</label><textarea id="sAddr"></textarea></div>
+        <div class="field" style="margin-top:10px"><label>Reminder template ({name} {time} {clinic} {doctor})</label><textarea id="sRemind"></textarea></div>
+        <div class="field" style="margin-top:10px"><label>Recall template ({name} {clinic} {fee})</label><textarea id="sRecall"></textarea></div>
+        <button class="btn btn-p" id="btnSaveSettings" style="margin-top:14px"><i class="fa-solid fa-floppy-disk"></i> Save settings</button>
+      </div>
+      <div class="panel">
+        <h3><i class="fa-solid fa-brain"></i> AI engine</h3>
+        <div class="switch" style="margin-bottom:12px"><input type="checkbox" id="sLlmOn"><label for="sLlmOn">LLM polish ON (free-text sawal OpenRouter/Gemini se — booking hamesha rule-engine se, 100% reliable)</label></div>
+        <div class="grid2">
+          <div class="field"><label>OpenRouter API key (optional)</label><input id="sLlmKey" type="password" placeholder="sk-or-..."></div>
+          <div class="field"><label>Model</label><input id="sLlmModel" placeholder="google/gemini-2.0-flash-001"></div>
+        </div>
+        <div class="hintbox">Demo bina key ke bhi poora chalta hai. Key sirf server par store hoti hai, browser me kabhi nahi jaati (write-only).</div>
+      </div>
+      <div class="panel">
+        <h3><i class="fa-brands fa-whatsapp"></i> Real WhatsApp connect (production)</h3>
+        <div class="hintbox" style="margin-top:0">
+          Live mode ke liye server par env vars set karo: <b>WA_TOKEN</b>, <b>WA_PHONE_ID</b>, <b>WA_VERIFY_TOKEN</b> — phir Meta dashboard me webhook URL <b>https://your-domain/webhook</b> point karo. Har clinic ka apna number Cloud API par connect hota hai. Full steps README.md me hain. Reminder/recall ke liye Meta-approved templates chahiye (utility + marketing).
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = id => document.getElementById(id);
+const api = async (url, opts) => {
+  const res = await fetch(url, opts);
+  if (!res.ok) { const e = await res.json().catch(()=>({error:res.statusText})); throw new Error(e.error || 'Error'); }
+  return res.json();
+};
+const post = (url, body) => api(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body || {}) });
+let SETTINGS = null, APPTS = [], CONVS = [], activeConv = null, apptFilter = 'today';
+
+function toast(msg){ const t=$('toast'); t.innerHTML=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 3500); }
+function fmt12(hhmm){ let [h,m]=hhmm.split(':').map(Number); const ap=h>=12?'PM':'AM'; h=h%12||12; return h+':'+String(m).padStart(2,'0')+' '+ap; }
+function todayStr(){ return new Date(Date.now()+5.5*3600e3).toISOString().slice(0,10); }
+function fmtDate(d){ const t=todayStr(); if(d===t) return 'Aaj'; const tm=new Date(Date.now()+5.5*3600e3+864e5).toISOString().slice(0,10); if(d===tm) return 'Kal'; const dd=new Date(d+'T00:00:00Z'); return dd.toLocaleDateString('en-IN',{day:'numeric',month:'short',timeZone:'UTC'}); }
+function fmtTime(ts){ return new Date(ts).toLocaleTimeString('en-IN',{hour:'numeric',minute:'2-digit'}); }
+function esc(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+function showTab(name){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.nav button[data-tab]').forEach(b=>b.classList.toggle('on', b.dataset.tab===name));
+  $('tab-'+name).classList.add('on');
+  // Close mobile sidebar
+  if(window.innerWidth <= 900) {
+    document.querySelector('.side').classList.remove('open');
+    document.querySelector('.overlay').classList.remove('active');
+  }
+  if(name==='inbox') renderInbox();
+  if(name==='knowledge') loadKb();
+  if(name==='settings') fillSettings();
+}
+document.querySelectorAll('.nav button[data-tab]').forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
+
+// ---------- overview ----------
+async function loadStats(){
+  const s = await api('/api/stats');
+  $('statCards').innerHTML = `
+    <div class="stat"><div class="lb">Aaj ke appointments</div><div class="vl">${s.todayCount}</div><div class="hint">${s.upcomingCount} upcoming total</div></div>
+    <div class="stat"><div class="lb"><i class="fa-solid fa-robot"></i> AI bookings</div><div class="vl g">${s.aiBookings}</div><div class="hint">bina phone call ke</div></div>
+    <div class="stat"><div class="lb">Messages handled</div><div class="vl b">${s.messagesHandled}</div><div class="hint">~${s.hoursSaved} staff-hours bachaye</div></div>
+    <div class="stat"><div class="lb">No-show rate</div><div class="vl a">${s.noShowRate}%</div><div class="hint">reminders se ghat-ta hai</div></div>
+    <div class="stat"><div class="lb">Est. revenue (booked)</div><div class="vl g">₹${s.estRevenue.toLocaleString('en-IN')}</div><div class="hint">confirmed + completed</div></div>
+    <div class="stat"><div class="lb"><i class="fa-solid fa-triangle-exclamation"></i> Urgent flags</div><div class="vl" style="color:${s.urgent?'var(--red)':'var(--ink)'}">${s.urgent}</div><div class="hint">inbox me check karo</div></div>`;
+  $('urgentBadge').innerHTML = s.urgent ? ' <i class="fa-solid fa-circle" style="color:var(--red);font-size:10px"></i>' : '';
+  $('modeLabel').textContent = s.waLive ? 'LIVE — real WhatsApp connected' : 'Demo mode — simulator connected';
+}
+async function loadChart(){
+  const a = await api('/api/analytics');
+  const max = Math.max(1, ...a.days.map(d=>d.total));
+  $('chart').innerHTML = a.days.map(d=>{
+    const h = Math.round(d.total/max*100), aiH = d.total ? Math.round(d.ai/d.total*100) : 0;
+    const dd = new Date(d.date+'T00:00:00Z');
+    return `<div class="bar"><div class="n">${d.total||''}</div><div class="col" style="height:${Math.max(h,3)}%"><div class="ai" style="height:${aiH}%"></div></div><div class="d">${dd.toLocaleDateString('en-IN',{weekday:'short',timeZone:'UTC'})}</div></div>`;
+  }).join('');
+}
+async function loadUpcomingMini(){
+  const t = todayStr();
+  const list = APPTS.filter(a=>a.date>=t && a.status==='confirmed').slice(0,6);
+  $('upcomingMini').innerHTML = list.length ? `<table><thead><tr><th>Kab</th><th>Patient</th><th>Service</th><th>Source</th><th>Reminder</th></tr></thead><tbody>` +
+    list.map(a=>`<tr><td><b>${fmtDate(a.date)}</b> <br><span class="src">${fmt12(a.time)}</span></td><td>${esc(a.name)}</td><td>${esc(a.service)}</td><td class="src">${a.source==='ai'?'<i class="fa-solid fa-robot"></i> AI':'<i class="fa-solid fa-user"></i> Desk'}</td><td class="src">${a.reminderConfirmed?'<i class="fa-solid fa-check" style="color:var(--wa)"></i> confirmed':a.reminderSent?'<i class="fa-solid fa-bell"></i> sent':'—'}</td></tr>`).join('') + '</tbody></table>'
+    : '<div class="empty">Koi upcoming appointment nahi. Patient demo se book karke dekho!</div>';
+}
+
+// ---------- appointments ----------
+function renderAppts(){
+  const t = todayStr();
+  let list = APPTS;
+  if (apptFilter==='today') list = APPTS.filter(a=>a.date===t);
+  else if (apptFilter==='upcoming') list = APPTS.filter(a=>a.date>=t && a.status==='confirmed');
+  $('apptRows').innerHTML = list.length ? list.map(a=>`
+    <tr>
+      <td><b>${fmtDate(a.date)}</b><br><span class="src">${fmt12(a.time)}</span></td>
+      <td>${esc(a.name)}<br><span class="src">${esc(a.phone||'')}</span></td>
+      <td>${esc(a.service)}</td>
+      <td class="src">${a.source==='ai'?'<i class="fa-solid fa-robot"></i> AI':'<i class="fa-solid fa-user"></i> Desk'}</td>
+      <td><span class="status st-${a.status}">${a.status}</span>${a.reminderConfirmed?' <span class="src"><i class="fa-solid fa-bell" style="color:var(--wa)"></i><i class="fa-solid fa-check" style="color:var(--wa)"></i></span>':''}</td>
+      <td><div class="acts">
+        ${a.status==='confirmed'?`<button class="act ok" onclick="setStatus('${a.id}','completed')"><i class="fa-solid fa-check"></i> Done</button>
+        <button class="act warn" onclick="setStatus('${a.id}','no-show')"><i class="fa-solid fa-user-slash"></i> No-show</button>
+        <button class="act bad" onclick="setStatus('${a.id}','cancelled')"><i class="fa-solid fa-xmark"></i> Cancel</button>`:'<span class="src">—</span>'}
+      </div></td>
+    </tr>`).join('') : '<tr><td colspan="6"><div class="empty">Is filter me koi appointment nahi.</div></td></tr>';
+}
+async function setStatus(id, status){
+  try{ await api('/api/appointments/'+id, {method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({status})}); await refresh(); toast('Status update: '+status); }
+  catch(e){ toast('⚠️ '+e.message); }
+}
+document.querySelectorAll('.f').forEach(b=>b.onclick=()=>{ apptFilter=b.dataset.f; document.querySelectorAll('.f').forEach(x=>x.classList.toggle('on',x===b)); renderAppts(); });
+$('btnAddAppt').onclick = async () => {
+  try{
+    await post('/api/appointments', { name:$('aName').value.trim(), phone:$('aPhone').value.trim(), date:$('aDate').value, time:$('aTime').value, service:$('aService').value });
+    $('aName').value=''; $('aPhone').value='';
+    await refresh(); toast('✅ Appointment book ho gaya');
+  }catch(e){ toast('⚠️ '+e.message); }
+};
+
+// ---------- inbox ----------
+function renderInbox(){
+  $('convList').innerHTML = CONVS.length ? CONVS.map(c=>{
+    const last = c.messages[c.messages.length-1];
+    return `<div class="conv ${activeConv===c.id?'on':''}" onclick="openConv('${c.id}')">
+      <div class="nm"><span>${esc(c.name)} ${c.flags.urgent?'<span class="urgent"><i class="fa-solid fa-triangle-exclamation"></i> URGENT</span>':''}</span><span class="tm">${last?fmtTime(last.ts):''}</span></div>
+      <div class="pv">${last?(last.dir==='out'?'<i class="fa-solid fa-robot"></i> ':'<i class="fa-solid fa-user"></i> ')+esc(last.text.slice(0,60)):''}</div>
+    </div>`;
+  }).join('') : '<div class="empty">Abhi koi conversation nahi.<br>Patient demo se message bhejo.</div>';
+  if (activeConv) renderThread();
+}
+async function openConv(id){
+  activeConv = id;
+  const c = CONVS.find(x=>x.id===id);
+  if (c && c.flags.urgent) { await post('/api/conversations/'+id+'/read'); c.flags.urgent=false; loadStats(); }
+  renderInbox();
+}
+function renderThread(){
+  const c = CONVS.find(x=>x.id===activeConv);
+  if (!c) return;
+  $('thread').innerHTML = `
+    <div class="threadhead"><div><div class="nm">${esc(c.name)}</div><div class="ph">+${esc(c.phone)}</div></div>
+    <span class="src"><i class="fa-solid fa-robot"></i> AI handling ${c.flags.urgent?'• <span style="color:var(--red)"><i class="fa-solid fa-triangle-exclamation"></i> urgent</span>':''}</span></div>
+    <div class="threadmsgs" id="threadMsgs">${c.messages.map(m=>`<div class="mb ${m.dir}">${esc(m.text)}<small>${m.dir==='out'?'<i class="fa-solid fa-robot"></i> AI':'<i class="fa-solid fa-user"></i> patient'} • ${fmtTime(m.ts)}</small></div>`).join('')}</div>`;
+  const tm = $('threadMsgs'); tm.scrollTop = tm.scrollHeight;
+}
+
+// ---------- knowledge ----------
+async function loadKb(){
+  const kb = await api('/api/kb');
+  $('kbList').innerHTML = kb.map(k=>`<div class="kbcard"><div class="q"><span><i class="fa-solid fa-circle-question"></i> ${esc(k.q)}</span><button class="del" onclick="delKb('${k.id}')"><i class="fa-solid fa-trash"></i></button></div><div class="a">${esc(k.a)}</div></div>`).join('');
+}
+async function delKb(id){ await api('/api/kb/'+id,{method:'DELETE'}); loadKb(); toast('Knowledge entry delete ho gayi'); }
+$('btnKbAdd').onclick = async () => {
+  if(!$('kbQ').value.trim() || !$('kbA').value.trim()) return toast('⚠️ Sawal aur jawab dono bharo');
+  await post('/api/kb', { q:$('kbQ').value.trim(), a:$('kbA').value.trim(), tags:$('kbTags').value.trim() });
+  $('kbQ').value=''; $('kbA').value=''; $('kbTags').value='';
+  loadKb(); toast('✅ AI ab is sawal ka jawab de sakta hai');
+};
+
+// ---------- settings ----------
+function fillSettings(){
+  if(!SETTINGS) return;
+  $('sClinic').value=SETTINGS.clinicName; $('sDoctor').value=SETTINGS.doctorName; $('sQual').value=SETTINGS.doctorQual;
+  $('sTagline').value=SETTINGS.tagline; $('sFee').value=SETTINGS.consultFee; $('sSlot').value=SETTINGS.slotMinutes;
+  $('sAddr').value=SETTINGS.address; $('sRemind').value=SETTINGS.reminderTemplate; $('sRecall').value=SETTINGS.recallTemplate;
+  $('sLlmOn').checked=SETTINGS.llmEnabled; $('sLlmModel').value=SETTINGS.llmModel;
+}
+$('btnSaveSettings').onclick = async () => {
+  const body = {
+    clinicName:$('sClinic').value, doctorName:$('sDoctor').value, doctorQual:$('sQual').value, tagline:$('sTagline').value,
+    consultFee:+$('sFee').value||500, slotMinutes:+$('sSlot').value||20, address:$('sAddr').value,
+    reminderTemplate:$('sRemind').value, recallTemplate:$('sRecall').value,
+    llmEnabled:$('sLlmOn').checked, llmModel:$('sLlmModel').value
+  };
+  if ($('sLlmKey').value.trim()) body.llmApiKey = $('sLlmKey').value.trim();
+  SETTINGS = await api('/api/settings',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  $('sLlmKey').value='';
+  applySettings(); toast('💾 Settings save ho gayi');
+};
+function applySettings(){
+  $('clinicTitle').textContent = SETTINGS.clinicName + ' — ' + SETTINGS.doctorName;
+  $('planPill').innerHTML = `<i class="fa-solid fa-star"></i> ${SETTINGS.plan}`;
+  $('aService').innerHTML = SETTINGS.services.map(s=>`<option>${esc(s.name)}</option>`).join('');
+}
+
+// ---------- quick actions ----------
+$('btnRemind').onclick = async () => {
+  const r = await post('/api/reminders/run');
+  toast(r.sent ? `<i class="fa-solid fa-bell"></i> ${r.sent} reminders bhej diye (${r.date} ke appointments). Inbox me dekho!` : 'Kal ke liye koi pending reminder nahi. Pehle kal ka appointment book karo.');
+  await refresh();
+};
+$('btnRecall').onclick = async () => {
+  const r = await post('/api/recall/run');
+  toast(r.sent ? `<i class="fa-solid fa-rotate-right"></i> ${r.sent} purane patients ko recall gaya (est. cost ₹${r.costEstimate}). Reply ka wait karo!` : 'Sab recall messages ja chuke hain.');
+  await refresh();
+};
+$('btnReseed').onclick = async () => { await post('/api/demo/reset'); activeConv=null; await refresh(); loadKb(); toast('↺ Demo data reset ho gaya'); };
+
+// ---------- boot & polling ----------
+async function refresh(){
+  [SETTINGS, APPTS, CONVS] = await Promise.all([api('/api/settings'), api('/api/appointments'), api('/api/conversations')]);
+  applySettings();
+  await Promise.all([loadStats(), loadChart()]);
+  renderAppts(); loadUpcomingMini();
+  if ($('tab-inbox').classList.contains('on')) renderInbox();
+}
+(async () => {
+  $('dateLine').textContent = new Date(Date.now()+5.5*3600e3).toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}) + ' • Indore, MP';
+  $('aDate').value = todayStr();
+  await refresh(); fillSettings();
+  setInterval(refresh, 5000);
+})();
+</script>
+</body>
+</html>
